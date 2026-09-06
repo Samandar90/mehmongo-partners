@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MehmonGo для отелей — табличка в номере, деньги за каждую заявку</title>
+<meta name="description" content="Отель ставит табличку с QR в номер. Гость заказывает трансфер, экскурсию или билеты. Отель получает фиксированную сумму за каждую выполненную заявку. Ташкент.">
+<meta property="og:title" content="MehmonGo для отелей">
+<meta property="og:description" content="Табличка в номере. Фиксированная выплата за каждую выполненную заявку гостя.">
+<meta property="og:locale" content="ru_RU">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ---------------------------------------------------------------
+   MehmonGo — партнёрская страница для отелей.
+   Палитра взята у узбекской майолики: кобальт, керамическая бирюза,
+   шафран, тёплая извёстка. Два «грунта»: тёмный — рассказ,
+   светлый — деньги. Смена фона отмечает переход к цифрам.
+   --------------------------------------------------------------- */
+:root{
+  --ink:#0C262B;
+  --ink-2:#123840;
+  --ink-3:#1B4A52;
+  --turq:#33A8AC;
+  --turq-soft:#7FCBCC;
+  --saffron:#E8A33D;
+  --ivory:#F3EEE4;
+  --ivory-2:#E7DFD1;
+  --muted:#93AEB0;
+  --ink-on-light:#0C262B;
+  --muted-on-light:#5A6E70;
+  --line-dark:rgba(127,203,204,.22);
+  --line-light:rgba(12,38,43,.16);
+  --display:"Unbounded",system-ui,sans-serif;
+  --body:"Golos Text","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+  --wrap:1120px;
+  --pad:clamp(20px,5vw,48px);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--ink);
+  color:var(--ivory);
+  font-family:var(--body);
+  font-size:clamp(16px,1.05vw + 13px,18px);
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+img,svg{max-width:100%;display:block}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--saffron);outline-offset:3px;border-radius:2px}
+
+.wrap{width:100%;max-width:var(--wrap);margin-inline:auto;padding-inline:var(--pad)}
+.band{padding-block:clamp(56px,8vw,104px)}
+.band-light{background:var(--ivory);color:var(--ink-on-light)}
+.band-light .eyebrow{color:var(--muted-on-light)}
+
+h1,h2,h3{font-family:var(--display);font-weight:800;line-height:1.06;letter-spacing:-.02em;margin:0}
+h2{font-size:clamp(28px,4.2vw,46px)}
+h3{font-size:clamp(19px,1.6vw,23px);font-weight:600;letter-spacing:-.01em}
+p{margin:0}
+.lede{font-size:clamp(17px,1.3vw,20px);line-height:1.6;max-width:60ch}
+
+.eyebrow{
+  font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--turq-soft);margin:0 0 18px;
+}
+
+/* ---------- utility bar ---------- */
+.topbar{border-bottom:1px solid var(--line-dark)}
+.topbar-in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:16px;flex-wrap:wrap}
+.mark{display:flex;align-items:baseline;gap:10px;font-family:var(--display);font-weight:800;letter-spacing:-.02em;font-size:19px}
+.mark span{font-family:var(--mono);font-weight:400;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--turq-soft)}
+.tel{font-family:var(--mono);font-size:14px;text-decoration:none;border-bottom:1px solid var(--turq);padding-bottom:2px;white-space:nowrap}
+.tel:hover{color:var(--saffron);border-color:var(--saffron)}
+
+/* ---------- hero ---------- */
+.hero{padding-block:clamp(48px,7vw,88px) clamp(56px,8vw,96px)}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(32px,5vw,64px);align-items:center}
+.hero h1{font-size:clamp(34px,6.6vw,74px)}
+.hero h1 em{font-style:normal;color:var(--saffron)}
+.hero .lede{margin-top:24px;color:var(--muted)}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-top:32px}
+.btn{
+  display:inline-block;font-family:var(--body);font-weight:600;font-size:16px;
+  padding:14px 24px;border-radius:2px;text-decoration:none;border:1px solid transparent;
+  transition:background .15s ease,color .15s ease,border-color .15s ease;
+}
+.btn-primary{background:var(--saffron);color:var(--ink)}
+.btn-primary:hover{background:#f2b45a}
+.btn-ghost{border-color:var(--line-dark);color:var(--ivory)}
+.btn-ghost:hover{border-color:var(--turq);color:var(--turq-soft)}
+
+/* the plaque: the real artifact of this product */
+.plaque{
+  background:var(--ivory);color:var(--ink-on-light);border-radius:3px;
+  padding:26px 24px 22px;box-shadow:0 26px 60px -24px rgba(0,0,0,.75);
+  transform:rotate(-1.4deg);max-width:330px;margin-inline:auto;
+}
+.plaque-top{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted-on-light)}
+.plaque-room{font-family:var(--display);font-weight:800;font-size:46px;line-height:1;margin:6px 0 14px;letter-spacing:-.03em}
+.plaque-qr{width:118px;height:118px;margin:0 auto 14px}
+.plaque-line{font-size:14px;line-height:1.45;text-align:center;color:var(--muted-on-light)}
+.plaque-line strong{color:var(--ink-on-light);font-weight:600}
+
+/* ---------- steps ---------- */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line-dark);border:1px solid var(--line-dark);margin-top:40px}
+.step{background:var(--ink);padding:26px 22px 30px}
+.step-n{font-family:var(--mono);font-size:12px;color:var(--saffron);letter-spacing:.14em;margin-bottom:14px}
+.step h3{margin-bottom:8px}
+.step p{color:var(--muted);font-size:15px;line-height:1.55}
+
+/* ---------- calculator (signature) ---------- */
+.calc{
+  margin-top:44px;border:1px solid var(--line-light);background:#fff;
+  display:grid;grid-template-columns:1.25fr .75fr;
+}
+.calc-inputs{padding:clamp(22px,3vw,34px);border-right:1px solid var(--line-light)}
+.calc-row{display:grid;grid-template-columns:1fr auto auto;gap:16px;align-items:center;padding:15px 0;border-bottom:1px solid var(--line-light)}
+.calc-row:last-of-type{border-bottom:0}
+.calc-name{font-weight:600;font-size:16px;line-height:1.3}
+.calc-rate{font-family:var(--mono);font-size:12px;color:var(--muted-on-light);display:block;font-weight:400;margin-top:3px}
+.stepper{display:flex;align-items:center;gap:2px}
+.stepper button{
+  width:36px;height:36px;border:1px solid var(--line-light);background:transparent;
+  font-family:var(--mono);font-size:17px;line-height:1;color:var(--ink-on-light);cursor:pointer;
+  border-radius:2px;transition:background .12s ease,border-color .12s ease;
+}
+.stepper button:hover{background:var(--ivory-2);border-color:var(--ink-on-light)}
+.stepper input{
+  width:62px;height:36px;text-align:center;font-family:var(--mono);font-size:16px;
+  border:1px solid var(--line-light);border-radius:2px;background:#fff;color:var(--ink-on-light);
+  -moz-appearance:textfield;
+}
+.stepper input::-webkit-outer-spin-button,.stepper input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.calc-sub{font-family:var(--mono);font-size:15px;min-width:66px;text-align:right;color:var(--muted-on-light)}
+
+.calc-out{padding:clamp(22px,3vw,34px);background:var(--ink);color:var(--ivory);display:flex;flex-direction:column;justify-content:center}
+.calc-tier{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--turq-soft)}
+.calc-tier b{color:var(--saffron);font-weight:400}
+.calc-total{font-family:var(--display);font-weight:800;font-size:clamp(40px,6vw,60px);line-height:1;letter-spacing:-.03em;margin:12px 0 4px}
+.calc-per{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.calc-note{margin-top:20px;padding-top:18px;border-top:1px solid var(--line-dark);font-size:14px;line-height:1.55;color:var(--muted)}
+.calc-note b{color:var(--ivory);font-weight:600}
+
+/* ---------- tables ---------- */
+.scroller{overflow-x:auto;margin-top:36px;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:15px}
+caption{text-align:left;font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-on-light);padding-bottom:12px}
+th,td{text-align:left;padding:13px 16px;border-bottom:1px solid var(--line-light);vertical-align:top}
+thead th{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-on-light);font-weight:400}
+tbody td:last-child,tbody th:last-child{font-family:var(--mono)}
+.band-light tbody tr:last-child td{border-bottom:0}
+.num{font-family:var(--mono);white-space:nowrap}
+.pay{color:#0F7F5B;font-weight:700}
+
+/* ---------- proof ---------- */
+.proofs{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line-dark);border:1px solid var(--line-dark);margin-top:40px}
+.proof{background:var(--ink);padding:28px 24px}
+.proof h3{margin-bottom:10px;color:var(--turq-soft)}
+.proof p{color:var(--muted);font-size:15px;line-height:1.6}
+.proof a{color:var(--saffron);text-decoration:none;border-bottom:1px solid rgba(232,163,61,.45);word-break:break-word}
+.proof a:hover{border-bottom-color:var(--saffron)}
+
+/* ---------- two columns: now / later ---------- */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,4vw,56px);margin-top:40px}
+.list{list-style:none;margin:0;padding:0}
+.list li{padding:11px 0 11px 30px;position:relative;border-bottom:1px solid var(--line-light);font-size:15.5px;line-height:1.5}
+.list li:last-child{border-bottom:0}
+.list li::before{position:absolute;left:0;top:11px;font-family:var(--mono);font-size:14px}
+.list-yes li::before{content:"✓";color:#0F7F5B}
+.list-soon li::before{content:"→";color:var(--muted-on-light)}
+
+/* ---------- closing ---------- */
+.band-close{background:var(--ink-2)}
+.close-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(28px,4vw,56px);align-items:start}
+.contact-card{border:1px solid var(--line-dark);padding:28px 26px}
+.contact-card .eyebrow{margin-bottom:12px}
+.contact-tel{
+  font-family:var(--display);font-weight:800;font-size:clamp(24px,3.2vw,34px);letter-spacing:-.02em;
+  text-decoration:none;display:inline-block;line-height:1.2;
+}
+.contact-tel:hover{color:var(--saffron)}
+.contact-card p{color:var(--muted);font-size:15px;margin-top:14px;line-height:1.55}
+.links{list-style:none;margin:24px 0 0;padding:0;display:grid;gap:10px}
+.links a{font-family:var(--mono);font-size:14px;text-decoration:none;border-bottom:1px solid var(--line-dark);padding-bottom:3px;word-break:break-all}
+.links a:hover{color:var(--turq-soft);border-color:var(--turq)}
+
+footer{border-top:1px solid var(--line-dark);padding-block:26px;font-size:13px;color:var(--muted)}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+/* ---------- responsive ---------- */
+@media (max-width:900px){
+  .hero-grid{grid-template-columns:1fr;gap:40px}
+  .plaque{transform:rotate(-1deg)}
+  .steps{grid-template-columns:1fr 1fr}
+  .calc{grid-template-columns:1fr}
+  .calc-inputs{border-right:0;border-bottom:1px solid var(--line-light)}
+  .proofs{grid-template-columns:1fr}
+  .split{grid-template-columns:1fr;gap:32px}
+  .close-grid{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  .steps{grid-template-columns:1fr}
+  .calc-row{grid-template-columns:1fr auto;row-gap:10px}
+  .calc-sub{grid-column:2;text-align:right}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
+}
+@media print{
+  body{background:#fff;color:#000}
+  .band-close,.topbar{background:#fff}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap topbar-in">
+    <div class="mark">MehmonGo <span>для отелей</span></div>
+    <a class="tel" href="tel:+998990220114">+998 99 022 01 14</a>
+  </div>
+</div>
+
+<header class="wrap hero">
+  <div class="hero-grid">
+    <div>
+      <p class="eyebrow">Ташкент · услуги для гостей отеля</p>
+      <h1>Табличка в номере.<br><em>Деньги за каждую заявку.</em></h1>
+      <p class="lede">
+        Вы ставите карточку с QR-кодом на тумбочку. Гость наводит камеру и заказывает
+        трансфер из аэропорта, экскурсию или билеты. Всё остальное делаем мы — а вы
+        получаете фиксированную сумму за каждую выполненную заявку.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#skolko">Сколько это в деньгах</a>
+        <a class="btn btn-ghost" href="#doverie">Как проверить, что заплатим</a>
+      </div>
+    </div>
+
+    <div>
+      <div class="plaque">
+        <div class="plaque-top">Комната</div>
+        <div class="plaque-room">401</div>
+        <svg class="plaque-qr" viewBox="0 0 29 29" aria-hidden="true" focusable="false">
+          <rect width="29" height="29" fill="#F3EEE4"/>
+          <g fill="#0C262B">
+            <path d="M0 0h7v7H0zM1 1v5h5V1z"/><rect x="2" y="2" width="3" height="3"/>
+            <path d="M22 0h7v7h-7zM23 1v5h5V1z"/><rect x="24" y="2" width="3" height="3"/>
+            <path d="M0 22h7v7H0zM1 23v5h5v-5z"/><rect x="2" y="24" width="3" height="3"/>
+            <rect x="9" y="1" width="1" height="1"/><rect x="11" y="1" width="2" height="1"/>
+            <rect x="15" y="1" width="1" height="2"/><rect x="9" y="3" width="2" height="1"/>
+            <rect x="13" y="3" width="1" height="2"/><rect x="17" y="3" width="1" height="1"/>
+            <rect x="10" y="5" width="1" height="2"/><rect x="12" y="5" width="3" height="1"/>
+            <rect x="16" y="5" width="1" height="2"/><rect x="1" y="9" width="2" height="1"/>
+            <rect x="4" y="9" width="1" height="2"/><rect x="6" y="10" width="2" height="1"/>
+            <rect x="9" y="9" width="1" height="3"/><rect x="11" y="9" width="3" height="1"/>
+            <rect x="15" y="9" width="1" height="1"/><rect x="17" y="9" width="2" height="2"/>
+            <rect x="21" y="9" width="1" height="2"/><rect x="23" y="10" width="2" height="1"/>
+            <rect x="26" y="9" width="1" height="1"/><rect x="28" y="10" width="1" height="2"/>
+            <rect x="2" y="12" width="1" height="2"/><rect x="5" y="12" width="2" height="1"/>
+            <rect x="11" y="12" width="1" height="2"/><rect x="13" y="13" width="2" height="1"/>
+            <rect x="16" y="12" width="1" height="1"/><rect x="19" y="12" width="2" height="2"/>
+            <rect x="23" y="12" width="1" height="2"/><rect x="26" y="13" width="2" height="1"/>
+            <rect x="1" y="15" width="1" height="1"/><rect x="3" y="16" width="2" height="1"/>
+            <rect x="7" y="15" width="1" height="2"/><rect x="10" y="15" width="2" height="1"/>
+            <rect x="14" y="15" width="1" height="2"/><rect x="17" y="16" width="1" height="1"/>
+            <rect x="20" y="15" width="1" height="1"/><rect x="22" y="16" width="2" height="1"/>
+            <rect x="25" y="15" width="1" height="2"/><rect x="27" y="16" width="1" height="1"/>
+            <rect x="2" y="18" width="2" height="1"/><rect x="6" y="18" width="1" height="2"/>
+            <rect x="9" y="18" width="1" height="1"/><rect x="12" y="18" width="2" height="2"/>
+            <rect x="15" y="19" width="1" height="1"/><rect x="18" y="18" width="1" height="2"/>
+            <rect x="21" y="19" width="2" height="1"/><rect x="24" y="18" width="1" height="1"/>
+            <rect x="27" y="19" width="1" height="2"/><rect x="9" y="21" width="2" height="1"/>
+            <rect x="13" y="21" width="1" height="2"/><rect x="16" y="22" width="2" height="1"/>
+            <rect x="20" y="21" width="1" height="1"/><rect x="23" y="22" width="1" height="2"/>
+            <rect x="26" y="21" width="2" height="1"/><rect x="9" y="24" width="1" height="2"/>
+            <rect x="11" y="25" width="2" height="1"/><rect x="14" y="24" width="1" height="1"/>
+            <rect x="17" y="24" width="1" height="3"/><rect x="19" y="25" width="1" height="1"/>
+            <rect x="21" y="24" width="2" height="1"/><rect x="25" y="24" width="1" height="2"/>
+            <rect x="27" y="25" width="1" height="1"/><rect x="10" y="27" width="2" height="1"/>
+            <rect x="14" y="27" width="1" height="1"/><rect x="19" y="27" width="3" height="1"/>
+            <rect x="24" y="27" width="1" height="1"/><rect x="27" y="27" width="1" height="1"/>
+          </g>
+        </svg>
+        <p class="plaque-line"><strong>Нужен трансфер, гид или билеты?</strong><br>Наведите камеру телефона</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="band wrap" aria-labelledby="kak">
+  <p class="eyebrow">Как это устроено</p>
+  <h2 id="kak">Четыре шага, из которых вы делаете один</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-n">01</div>
+      <h3>Мы печатаем таблички</h3>
+      <p>Отдельная карточка на каждый номер, со своим кодом. Вы только раскладываете их по комнатам.</p>
+    </div>
+    <div class="step">
+      <div class="step-n">02</div>
+      <h3>Гость сканирует</h3>
+      <p>Без приложения и без регистрации. Открывается страница вашего отеля с номером комнаты.</p>
+    </div>
+    <div class="step">
+      <div class="step-n">03</div>
+      <h3>Заявка приходит нам</h3>
+      <p>За секунды. Мы связываемся с гостем, согласовываем цену и выполняем заказ сами.</p>
+    </div>
+    <div class="step">
+      <div class="step-n">04</div>
+      <h3>Вы получаете выплату</h3>
+      <p>Фиксированная сумма за каждую выполненную заявку. Раз в месяц, по счётчику в вашем кабинете.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band band-light" id="skolko" aria-labelledby="skolko-h">
+  <div class="wrap">
+    <p class="eyebrow">Сколько вы получите</p>
+    <h2 id="skolko-h">Мы платим за заявку, а не процент от нашей выручки</h2>
+    <p class="lede" style="margin-top:20px;color:var(--muted-on-light)">
+      Процент пришлось бы проверять по нашим цифрам. Фиксированная ставка проверяется
+      умножением: количество заявок × ставка. Количество вы видите у себя в кабинете.
+    </p>
+
+    <div class="calc">
+      <div class="calc-inputs">
+        <p class="eyebrow" style="margin-bottom:6px">Посчитайте свой месяц</p>
+        <div class="calc-row">
+          <div class="calc-name">Трансферы<span class="calc-rate">аэропорт, авто по городу · $3</span></div>
+          <div class="stepper">
+            <button type="button" data-step="transport" data-delta="-1" aria-label="Меньше трансферов">−</button>
+            <input type="number" id="q-transport" value="30" min="0" max="999" inputmode="numeric" aria-label="Трансферов в месяц">
+            <button type="button" data-step="transport" data-delta="1" aria-label="Больше трансферов">+</button>
+          </div>
+          <div class="calc-sub" id="s-transport">$90</div>
+        </div>
+        <div class="calc-row">
+          <div class="calc-name">Экскурсии и гид<span class="calc-rate">город, горы, Самарканд · $12</span></div>
+          <div class="stepper">
+            <button type="button" data-step="tours" data-delta="-1" aria-label="Меньше экскурсий">−</button>
+            <input type="number" id="q-tours" value="15" min="0" max="999" inputmode="numeric" aria-label="Экскурсий в месяц">
+            <button type="button" data-step="tours" data-delta="1" aria-label="Больше экскурсий">+</button>
+          </div>
+          <div class="calc-sub" id="s-tours">$180</div>
+        </div>
+        <div class="calc-row">
+          <div class="calc-name">Билеты<span class="calc-rate">поезд, самолёт · $5</span></div>
+          <div class="stepper">
+            <button type="button" data-step="tickets" data-delta="-1" aria-label="Меньше билетов">−</button>
+            <input type="number" id="q-tickets" value="0" min="0" max="999" inputmode="numeric" aria-label="Билетов в месяц">
+            <button type="button" data-step="tickets" data-delta="1" aria-label="Больше билетов">+</button>
+          </div>
+          <div class="calc-sub" id="s-tickets">$0</div>
+        </div>
+        <div class="calc-row">
+          <div class="calc-name">Рестораны<span class="calc-rate">бронь стола · $2</span></div>
+          <div class="stepper">
+            <button type="button" data-step="restaurants" data-delta="-1" aria-label="Меньше броней">−</button>
+            <input type="number" id="q-restaurants" value="0" min="0" max="999" inputmode="numeric" aria-label="Броней стола в месяц">
+            <button type="button" data-step="restaurants" data-delta="1" aria-label="Больше броней">+</button>
+          </div>
+          <div class="calc-sub" id="s-restaurants">$0</div>
+        </div>
+      </div>
+
+      <div class="calc-out">
+        <div class="calc-tier" id="tier" aria-live="polite">45 заявок · уровень <b>Премиум</b> · +40%</div>
+        <div class="calc-total" id="total">$378</div>
+        <div class="calc-per">в месяц, вашему отелю</div>
+        <p class="calc-note">
+          Считаются только <b>выполненные</b> заявки. Если гость передумал или мы не смогли
+          выполнить заказ — заявка не оплачивается и в счёт не идёт.
+        </p>
+      </div>
+    </div>
+
+    <div class="scroller">
+      <table>
+        <caption>Уровни: чем больше заявок за календарный месяц, тем выше ставка</caption>
+        <thead>
+          <tr><th scope="col">Уровень</th><th scope="col">Заявок в месяц</th><th scope="col">Надбавка</th><th scope="col">Пример: 30 трансферов + 15 экскурсий</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Старт</th><td class="num">1 – 14</td><td class="num">базовая ставка</td><td class="num">—</td></tr>
+          <tr><th scope="row">Партнёр</th><td class="num">15 – 39</td><td class="num">+20%</td><td class="num">—</td></tr>
+          <tr><th scope="row">Премиум</th><td class="num">40 и больше</td><td class="num">+40%</td><td class="num pay">$378 / месяц</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="scroller">
+      <table>
+        <caption>Три отеля, три месяца — как это выглядит на практике</caption>
+        <thead>
+          <tr><th scope="col">Отель</th><th scope="col">Заявки за месяц</th><th scope="col">Всего</th><th scope="col">Уровень</th><th scope="col">К выплате</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Небольшой</th><td>8 трансферов, 2 экскурсии</td><td class="num">10</td><td class="num">Старт</td><td class="num pay">$48</td></tr>
+          <tr><th scope="row">Средний</th><td>20 трансферов, 6 экскурсий, 2 билета</td><td class="num">28</td><td class="num">Партнёр</td><td class="num pay">$170</td></tr>
+          <tr><th scope="row">Активный</th><td>30 трансферов, 15 экскурсий</td><td class="num">45</td><td class="num">Премиум</td><td class="num pay">$378</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="band wrap" id="doverie" aria-labelledby="doverie-h">
+  <p class="eyebrow">Главный вопрос</p>
+  <h2 id="doverie-h">«А откуда мне знать, что вы правда заплатите?»</h2>
+  <p class="lede" style="margin-top:20px;color:var(--muted)">
+    Справедливый вопрос. Мы построили расчёт так, чтобы вам не нужно было верить нам на слово —
+    ни в одной точке.
+  </p>
+
+  <div class="proofs">
+    <div class="proof">
+      <h3>Считать нечего</h3>
+      <p>
+        Ставка фиксированная за заявку, а не доля от нашей выручки. Вам не нужно знать,
+        сколько мы заработали, и не нужно проверять наши отчёты. Количество заявок × ставка —
+        всё, что нужно посчитать.
+      </p>
+    </div>
+    <div class="proof">
+      <h3>Свой кабинет с логином</h3>
+      <p>
+        Вы заходите под своей учётной записью и видите, сколько заявок пришло из ваших
+        номеров — по каждой услуге и за любой период, который выберете сами. Считает база
+        данных, а не браузер: ни одна заявка не потеряется при подсчёте.
+      </p>
+    </div>
+    <div class="proof">
+      <h3>Чужого вы не увидите, вашего не увидят</h3>
+      <p>
+        Разграничение сделано на уровне самой базы данных Postgres, а не в интерфейсе.
+        Другой отель физически не может прочитать ваши заявки, даже зная адреса и имея логин.
+        Это не настройка, которую можно случайно выключить.
+      </p>
+    </div>
+    <div class="proof">
+      <h3>Ставка замораживается в заявке</h3>
+      <p>
+        В момент расчёта условия записываются в саму заявку. Пересмотр договора на будущее
+        не переписывает то, что уже начислено. Задним числом уменьшить выплату невозможно.
+      </p>
+    </div>
+    <div class="proof">
+      <h3>Исходный код открыт</h3>
+      <p>
+        Весь код платформы лежит в открытом доступе. Ваш системный администратор или любой
+        знакомый программист может сам прочитать, как считаются заявки и кто что видит —
+        не спрашивая нас.<br>
+        <a href="https://github.com/Samandar90/mehmongo-guest-services">github.com/Samandar90/mehmongo-guest-services</a>
+      </p>
+    </div>
+    <div class="proof">
+      <h3>Выход в один клик</h3>
+      <p>
+        Не понравилось — говорите, и мы отключаем отель. Все QR-коды в ваших номерах
+        перестают работать сразу. Никаких сроков, штрафов и «отработайте ещё квартал».
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="band band-light" aria-labelledby="chestno">
+  <div class="wrap">
+    <p class="eyebrow">Без сюрпризов после подписания</p>
+    <h2 id="chestno">Что работает сегодня, а что мы ещё доделываем</h2>
+    <div class="split">
+      <div>
+        <h3 style="margin-bottom:14px">Работает сейчас</h3>
+        <ul class="list list-yes">
+          <li>Табличка с QR на каждый номер, печатаем мы</li>
+          <li>Гостевая страница с названием вашего отеля и номером комнаты</li>
+          <li>Заявка доходит до нас за секунды</li>
+          <li>Ваш кабинет: счётчик заявок по услугам за любой период</li>
+          <li>Ваши данные видите только вы</li>
+          <li>Отключение отеля гасит все QR мгновенно</li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="margin-bottom:14px">Доделываем</h3>
+        <ul class="list list-soon">
+          <li>Список заявок в кабинете — пока там только итоги за период</li>
+          <li>Гостевая страница на русском и узбекском — сейчас английский</li>
+          <li>Свой набор услуг под отель — сейчас список общий</li>
+          <li>Логотип отеля на гостевой странице</li>
+          <li>Собственный домен вместо технического адреса</li>
+        </ul>
+      </div>
+    </div>
+    <p style="margin-top:32px;max-width:66ch;color:var(--muted-on-light);font-size:15.5px">
+      Мы показываем этот список специально. Первые отели подключаются к продукту, который
+      ещё растёт, и честнее сказать об этом до подписания, чем после.
+    </p>
+  </div>
+</section>
+
+<section class="band band-close" aria-labelledby="start">
+  <div class="wrap close-grid">
+    <div>
+      <p class="eyebrow">Подключение</p>
+      <h2 id="start">Один день от разговора до таблички в номере</h2>
+      <p class="lede" style="margin-top:20px;color:var(--muted)">
+        От вас нужен только список номеров и человек, который разложит карточки.
+        Всё остальное — наша работа: заводим отель, печатаем таблички, выдаём вам
+        логин в кабинет и проверяем каждый код перед передачей.
+      </p>
+      <ul class="list list-yes" style="margin-top:26px">
+        <li style="border-color:var(--line-dark)">Договариваемся об условиях и уровне</li>
+        <li style="border-color:var(--line-dark)">Вы даёте список номеров</li>
+        <li style="border-color:var(--line-dark)">Мы печатаем и проверяем таблички</li>
+        <li style="border-color:var(--line-dark)">Выдаём логин в ваш кабинет</li>
+        <li style="border-color:var(--line-dark)">Раскладываете карточки — и всё работает</li>
+      </ul>
+    </div>
+
+    <div class="contact-card">
+      <p class="eyebrow">Поговорим</p>
+      <a class="contact-tel" href="tel:+998990220114">+998 99 022 01 14</a>
+      <p>Позвоните или напишите в Telegram на этот номер. Приедем, покажем табличку
+         вживую и ответим на любой вопрос про расчёты.</p>
+      <ul class="links">
+        <li><a href="https://mehmongo.samandarup88.workers.dev">Посмотреть, что видит гость →</a></li>
+        <li><a href="https://mehmongo.samandarup88.workers.dev/admin">Кабинет отеля →</a></li>
+        <li><a href="https://github.com/Samandar90/mehmongo-guest-services">Исходный код платформы →</a></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>MehmonGo · услуги для гостей отелей · Ташкент</span>
+    <span>Ставки и уровни действуют с момента подписания и фиксируются в договоре.</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  // Ставка в долларах за одну ВЫПОЛНЕННУЮ заявку.
+  var RATES = { transport: 3, tours: 12, tickets: 5, restaurants: 2 };
+
+  // Уровни по числу выполненных заявок за календарный месяц.
+  var TIERS = [
+    { from: 40, name: 'Премиум', bonus: 0.40 },
+    { from: 15, name: 'Партнёр', bonus: 0.20 },
+    { from: 0,  name: 'Старт',   bonus: 0    }
+  ];
+
+  var keys = Object.keys(RATES);
+  var totalEl = document.getElementById('total');
+  var tierEl = document.getElementById('tier');
+
+  function money(value) {
+    return '$' + Math.round(value).toLocaleString('ru-RU');
+  }
+
+  function readCount(key) {
+    var input = document.getElementById('q-' + key);
+    var n = parseInt(input.value, 10);
+    if (isNaN(n) || n < 0) n = 0;
+    if (n > 999) n = 999;
+    return n;
+  }
+
+  function plural(n) {
+    var mod10 = n % 10, mod100 = n % 100;
+    if (mod10 === 1 && mod100 !== 11) return 'заявка';
+    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return 'заявки';
+    return 'заявок';
+  }
+
+  function recalc() {
+    var base = 0, count = 0;
+
+    keys.forEach(function (key) {
+      var n = readCount(key);
+      var sum = n * RATES[key];
+      count += n;
+      base += sum;
+      document.getElementById('s-' + key).textContent = money(sum);
+    });
+
+    var tier = TIERS.find(function (t) { return count >= t.from; });
+    var payout = base * (1 + tier.bonus);
+
+    totalEl.textContent = money(payout);
+    tierEl.innerHTML = count + ' ' + plural(count) + ' · уровень <b>' + tier.name + '</b>'
+      + (tier.bonus ? ' · +' + Math.round(tier.bonus * 100) + '%' : '');
+  }
+
+  document.querySelectorAll('.stepper button').forEach(function (button) {
+    button.addEventListener('click', function () {
+      var key = button.dataset.step;
+      var input = document.getElementById('q-' + key);
+      var next = readCount(key) + Number(button.dataset.delta);
+      input.value = Math.max(0, Math.min(999, next));
+      recalc();
+    });
+  });
+
+  keys.forEach(function (key) {
+    document.getElementById('q-' + key).addEventListener('input', recalc);
+  });
+
+  recalc();
+})();
+</script>
+</body>
+</html>
