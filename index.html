@@ -354,9 +354,20 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
           </div>
           <div class="calc-sub" id="s-tours">$120</div>
         </div>
+        <div class="calc-row">
+          <div class="calc-name">Билеты<span class="calc-rate">поезд и самолёт · $2 · без надбавки за уровень</span></div>
+          <div class="stepper">
+            <button type="button" data-step="tickets" data-delta="-1" aria-label="Меньше билетов">−</button>
+            <input type="number" id="q-tickets" value="0" min="0" max="999" inputmode="numeric" aria-label="Билетов в месяц">
+            <button type="button" data-step="tickets" data-delta="1" aria-label="Больше билетов">+</button>
+          </div>
+          <div class="calc-sub" id="s-tickets">$0</div>
+        </div>
         <p class="calc-hint">
-          Билеты на поезд и самолёт запускаются отдельно — ставку по ним
-          согласуем, когда сервис заработает.
+          <b>Рестораны мы не тарифицируем.</b> Бронь столика гость заказывает через
+          ту же табличку, и мы её делаем — но денег с ресторанов не берём, поэтому
+          и платить за неё нам не из чего. Это не забытая строка, а осознанное
+          решение: гостю удобно, а зарабатываем мы на поездках и билетах.
         </p>
       </div>
 
@@ -380,6 +391,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         <tbody>
           <tr><th scope="row">Трансфер<span class="row-note">аэропорт, авто по городу, межгород</span></th><td class="num">$2.00</td><td class="num">$2.40</td><td class="num pay">$2.80</td></tr>
           <tr><th scope="row">Экскурсия или тур<span class="row-note">гид по городу, Чимган, Чарвак, Амирсой</span></th><td class="num">$8.00</td><td class="num">$9.60</td><td class="num pay">$11.20</td></tr>
+          <tr><th scope="row">Билет<span class="row-note">поезд и самолёт · надбавка за уровень не применяется</span></th><td class="num">$2.00</td><td class="num">$2.00</td><td class="num pay">$2.00</td></tr>
+          <tr><th scope="row">Бронь столика<span class="row-note">делаем для гостя, но комиссию с ресторанов не берём</span></th><td class="num">—</td><td class="num">—</td><td class="num">—</td></tr>
         </tbody>
       </table>
     </div>
@@ -544,7 +557,11 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   'use strict';
 
   // Ставка в долларах за одну ВЫПОЛНЕННУЮ заявку.
-  var RATES = { transport: 2, tours: 8 };
+  var RATES = { transport: 2, tours: 8, tickets: 2 };
+
+  // Билеты идут по фиксированной ставке: сервисный сбор с билета слишком мал,
+  // чтобы выдержать надбавку за уровень. В счёт уровня они при этом входят.
+  var TIERED = { transport: true, tours: true, tickets: false };
 
   // Уровни по числу выполненных заявок за календарный месяц.
   var TIERS = [
@@ -577,18 +594,18 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   }
 
   function recalc() {
-    var base = 0, count = 0;
+    var tiered = 0, flat = 0, count = 0;
 
     keys.forEach(function (key) {
       var n = readCount(key);
       var sum = n * RATES[key];
       count += n;
-      base += sum;
+      if (TIERED[key]) tiered += sum; else flat += sum;
       document.getElementById('s-' + key).textContent = money(sum);
     });
 
     var tier = TIERS.find(function (t) { return count >= t.from; });
-    var payout = base * (1 + tier.bonus);
+    var payout = tiered * (1 + tier.bonus) + flat;
 
     totalEl.textContent = money(payout);
     tierEl.innerHTML = count + ' ' + plural(count) + ' · уровень <b>' + tier.name + '</b>'
