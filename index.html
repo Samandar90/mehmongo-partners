@@ -145,6 +145,7 @@ p{margin:0}
 .calc-per{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
 .calc-note{margin-top:20px;padding-top:18px;border-top:1px solid var(--line-dark);font-size:14px;line-height:1.55;color:var(--muted)}
 .calc-note b{color:var(--ivory);font-weight:600}
+.calc-hint{margin-top:18px;padding-top:16px;border-top:1px solid var(--line-light);font-size:14px;line-height:1.55;color:var(--muted-on-light)}
 
 /* ---------- tables ---------- */
 .scroller{overflow-x:auto;margin-top:36px;-webkit-overflow-scrolling:touch}
@@ -156,6 +157,9 @@ tbody td:last-child,tbody th:last-child{font-family:var(--mono)}
 .band-light tbody tr:last-child td{border-bottom:0}
 .num{font-family:var(--mono);white-space:nowrap}
 .pay{color:#0F7F5B;font-weight:700}
+.th-note{font-family:var(--mono);font-size:10px;color:var(--turq);letter-spacing:.06em;display:inline-block;margin-left:4px}
+.row-note{display:block;font-family:var(--body);font-weight:400;font-size:13px;line-height:1.4;color:var(--muted-on-light);margin-top:3px}
+tbody th{font-weight:600}
 
 /* ---------- proof ---------- */
 .proofs{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line-dark);border:1px solid var(--line-dark);margin-top:40px}
@@ -333,46 +337,32 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <div class="calc-inputs">
         <p class="eyebrow" style="margin-bottom:6px">Посчитайте свой месяц</p>
         <div class="calc-row">
-          <div class="calc-name">Трансферы<span class="calc-rate">аэропорт, авто по городу · $3</span></div>
+          <div class="calc-name">Трансферы<span class="calc-rate">аэропорт, авто по городу, межгород · $2</span></div>
           <div class="stepper">
             <button type="button" data-step="transport" data-delta="-1" aria-label="Меньше трансферов">−</button>
             <input type="number" id="q-transport" value="30" min="0" max="999" inputmode="numeric" aria-label="Трансферов в месяц">
             <button type="button" data-step="transport" data-delta="1" aria-label="Больше трансферов">+</button>
           </div>
-          <div class="calc-sub" id="s-transport">$90</div>
+          <div class="calc-sub" id="s-transport">$60</div>
         </div>
         <div class="calc-row">
-          <div class="calc-name">Экскурсии и гид<span class="calc-rate">город, горы, Самарканд · $12</span></div>
+          <div class="calc-name">Экскурсии и туры<span class="calc-rate">гид по городу, Чимган, Чарвак, Амирсой · $8</span></div>
           <div class="stepper">
             <button type="button" data-step="tours" data-delta="-1" aria-label="Меньше экскурсий">−</button>
             <input type="number" id="q-tours" value="15" min="0" max="999" inputmode="numeric" aria-label="Экскурсий в месяц">
             <button type="button" data-step="tours" data-delta="1" aria-label="Больше экскурсий">+</button>
           </div>
-          <div class="calc-sub" id="s-tours">$180</div>
+          <div class="calc-sub" id="s-tours">$120</div>
         </div>
-        <div class="calc-row">
-          <div class="calc-name">Билеты<span class="calc-rate">поезд, самолёт · $5</span></div>
-          <div class="stepper">
-            <button type="button" data-step="tickets" data-delta="-1" aria-label="Меньше билетов">−</button>
-            <input type="number" id="q-tickets" value="0" min="0" max="999" inputmode="numeric" aria-label="Билетов в месяц">
-            <button type="button" data-step="tickets" data-delta="1" aria-label="Больше билетов">+</button>
-          </div>
-          <div class="calc-sub" id="s-tickets">$0</div>
-        </div>
-        <div class="calc-row">
-          <div class="calc-name">Рестораны<span class="calc-rate">бронь стола · $2</span></div>
-          <div class="stepper">
-            <button type="button" data-step="restaurants" data-delta="-1" aria-label="Меньше броней">−</button>
-            <input type="number" id="q-restaurants" value="0" min="0" max="999" inputmode="numeric" aria-label="Броней стола в месяц">
-            <button type="button" data-step="restaurants" data-delta="1" aria-label="Больше броней">+</button>
-          </div>
-          <div class="calc-sub" id="s-restaurants">$0</div>
-        </div>
+        <p class="calc-hint">
+          Билеты на поезд и самолёт запускаются отдельно — ставку по ним
+          согласуем, когда сервис заработает.
+        </p>
       </div>
 
       <div class="calc-out">
         <div class="calc-tier" id="tier" aria-live="polite">45 заявок · уровень <b>Премиум</b> · +40%</div>
-        <div class="calc-total" id="total">$378</div>
+        <div class="calc-total" id="total">$252</div>
         <div class="calc-per">в месяц, вашему отелю</div>
         <p class="calc-note">
           Считаются только <b>выполненные</b> заявки. Если гость передумал или мы не смогли
@@ -383,31 +373,36 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
     <div class="scroller">
       <table>
-        <caption>Уровни: чем больше заявок за календарный месяц, тем выше ставка</caption>
+        <caption>Ставка за одну выполненную заявку</caption>
         <thead>
-          <tr><th scope="col">Уровень</th><th scope="col">Заявок в месяц</th><th scope="col">Надбавка</th><th scope="col">Пример: 30 трансферов + 15 экскурсий</th></tr>
+          <tr><th scope="col">Что заказал гость</th><th scope="col">Старт</th><th scope="col">Партнёр <span class="th-note">+20%</span></th><th scope="col">Премиум <span class="th-note">+40%</span></th></tr>
         </thead>
         <tbody>
-          <tr><th scope="row">Старт</th><td class="num">1 – 14</td><td class="num">базовая ставка</td><td class="num">—</td></tr>
-          <tr><th scope="row">Партнёр</th><td class="num">15 – 39</td><td class="num">+20%</td><td class="num">—</td></tr>
-          <tr><th scope="row">Премиум</th><td class="num">40 и больше</td><td class="num">+40%</td><td class="num pay">$378 / месяц</td></tr>
+          <tr><th scope="row">Трансфер<span class="row-note">аэропорт, авто по городу, межгород</span></th><td class="num">$2.00</td><td class="num">$2.40</td><td class="num pay">$2.80</td></tr>
+          <tr><th scope="row">Экскурсия или тур<span class="row-note">гид по городу, Чимган, Чарвак, Амирсой</span></th><td class="num">$8.00</td><td class="num">$9.60</td><td class="num pay">$11.20</td></tr>
         </tbody>
       </table>
     </div>
 
     <div class="scroller">
       <table>
-        <caption>Три отеля, три месяца — как это выглядит на практике</caption>
+        <caption>Уровень определяется числом заявок за календарный месяц</caption>
         <thead>
-          <tr><th scope="col">Отель</th><th scope="col">Заявки за месяц</th><th scope="col">Всего</th><th scope="col">Уровень</th><th scope="col">К выплате</th></tr>
+          <tr><th scope="col">Уровень</th><th scope="col">Заявок в месяц</th><th scope="col">Пример за месяц</th><th scope="col">Всего</th><th scope="col">К выплате</th></tr>
         </thead>
         <tbody>
-          <tr><th scope="row">Небольшой</th><td>8 трансферов, 2 экскурсии</td><td class="num">10</td><td class="num">Старт</td><td class="num pay">$48</td></tr>
-          <tr><th scope="row">Средний</th><td>20 трансферов, 6 экскурсий, 2 билета</td><td class="num">28</td><td class="num">Партнёр</td><td class="num pay">$170</td></tr>
-          <tr><th scope="row">Активный</th><td>30 трансферов, 15 экскурсий</td><td class="num">45</td><td class="num">Премиум</td><td class="num pay">$378</td></tr>
+          <tr><th scope="row">Старт</th><td class="num">1 – 14</td><td>8 трансферов, 2 экскурсии</td><td class="num">10</td><td class="num pay">$32</td></tr>
+          <tr><th scope="row">Партнёр</th><td class="num">15 – 39</td><td>20 трансферов, 6 экскурсий</td><td class="num">26</td><td class="num pay">$106</td></tr>
+          <tr><th scope="row">Премиум</th><td class="num">40 и больше</td><td>30 трансферов, 15 экскурсий</td><td class="num">45</td><td class="num pay">$252</td></tr>
         </tbody>
       </table>
     </div>
+
+    <p style="margin-top:28px;max-width:64ch;color:var(--muted-on-light);font-size:15.5px">
+      Уровень пересчитывается каждый месяц заново и применяется ко всем заявкам
+      этого месяца, а не только к тем, что сверх порога. Перешли с 39 заявок на
+      40 — надбавка +40% начисляется на все сорок.
+    </p>
   </div>
 </section>
 
@@ -549,7 +544,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   'use strict';
 
   // Ставка в долларах за одну ВЫПОЛНЕННУЮ заявку.
-  var RATES = { transport: 3, tours: 12, tickets: 5, restaurants: 2 };
+  var RATES = { transport: 2, tours: 8 };
 
   // Уровни по числу выполненных заявок за календарный месяц.
   var TIERS = [
