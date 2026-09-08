@@ -14,24 +14,31 @@
 <style>
 /* ---------------------------------------------------------------
    MehmonGo — партнёрская страница для отелей.
-   Палитра взята у узбекской майолики: кобальт, керамическая бирюза,
-   шафран, тёплая извёстка. Два «грунта»: тёмный — рассказ,
-   светлый — деньги. Смена фона отмечает переход к цифрам.
+
+   Палитра фирменная, та же, что на гостевом сайте и на печатных
+   табличках: тёмно-синий, малиновый, тёплая извёстка. Два «грунта»:
+   тёмный — рассказ, светлый — деньги; смена фона отмечает переход
+   к цифрам.
+
+   Малиновый существует в двух видах. Фирменный #D3226A читается на
+   светлом, но на тёмно-синем даёт контраст около 2:1 и как цвет
+   текста не годится — для тёмных грунтов есть осветлённый.
    --------------------------------------------------------------- */
 :root{
-  --ink:#0C262B;
-  --ink-2:#123840;
-  --ink-3:#1B4A52;
-  --turq:#33A8AC;
-  --turq-soft:#7FCBCC;
-  --saffron:#E8A33D;
-  --ivory:#F3EEE4;
-  --ivory-2:#E7DFD1;
-  --muted:#93AEB0;
-  --ink-on-light:#0C262B;
-  --muted-on-light:#5A6E70;
-  --line-dark:rgba(127,203,204,.22);
-  --line-light:rgba(12,38,43,.16);
+  --ink:#102B4E;
+  --ink-2:#163455;
+  --steel:#7E9CC4;
+  --steel-soft:#A9BFD8;
+  --accent:#D3226A;
+  --accent-on-dark:#F56FA0;
+  --ivory:#F7F3EC;
+  --ivory-2:#EDE6DA;
+  --paper:#FFFDFA;
+  --muted:#9AAAC2;
+  --ink-on-light:#102B4E;
+  --muted-on-light:#5E6A7C;
+  --line-dark:rgba(169,191,216,.22);
+  --line-light:rgba(16,43,78,.16);
   --display:"Unbounded",system-ui,sans-serif;
   --body:"Golos Text","Segoe UI",system-ui,sans-serif;
   --mono:"JetBrains Mono",ui-monospace,monospace;
@@ -51,7 +58,7 @@ body{
 }
 img,svg{max-width:100%;display:block}
 a{color:inherit}
-:focus-visible{outline:3px solid var(--saffron);outline-offset:3px;border-radius:2px}
+:focus-visible{outline:3px solid var(--accent-on-dark);outline-offset:3px;border-radius:2px}
 
 .wrap{width:100%;max-width:var(--wrap);margin-inline:auto;padding-inline:var(--pad)}
 .band{padding-block:clamp(56px,8vw,104px)}
@@ -66,7 +73,7 @@ p{margin:0}
 
 .eyebrow{
   font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;
-  color:var(--turq-soft);margin:0 0 18px;
+  color:var(--steel-soft);margin:0 0 18px;
 }
 
 /* ---------- utility bar ---------- */
@@ -77,9 +84,9 @@ p{margin:0}
    видел бы на встрече одну подпись, а в номере другую. */
 .mark{display:flex;align-items:center;gap:12px}
 .mark-logo{height:26px;width:auto;flex:0 0 auto}
-.mark span{font-family:var(--mono);font-weight:400;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--turq-soft)}
-.tel{font-family:var(--mono);font-size:14px;text-decoration:none;border-bottom:1px solid var(--turq);padding-bottom:2px;white-space:nowrap}
-.tel:hover{color:var(--saffron);border-color:var(--saffron)}
+.mark span{font-family:var(--mono);font-weight:400;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--steel-soft)}
+.tel{font-family:var(--mono);font-size:14px;text-decoration:none;border-bottom:1px solid var(--steel);padding-bottom:2px;white-space:nowrap}
+.tel:hover{color:var(--accent-on-dark);border-color:var(--accent-on-dark)}
 
 /* ---------- hero ---------- */
 .hero{padding-block:clamp(40px,6vw,88px) clamp(56px,8vw,96px)}
@@ -104,7 +111,7 @@ p{margin:0}
 .hero-grid > .lede{grid-area:lede}
 .hero-grid > .hero-cta{grid-area:cta}
 .hero h1{font-size:clamp(34px,6.6vw,74px)}
-.hero h1 em{font-style:normal;color:var(--saffron)}
+.hero h1 em{font-style:normal;color:var(--accent-on-dark)}
 .hero .lede{margin-top:24px;color:var(--muted)}
 .hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-top:32px}
 .btn{
@@ -112,10 +119,10 @@ p{margin:0}
   padding:14px 24px;border-radius:2px;text-decoration:none;border:1px solid transparent;
   transition:background .15s ease,color .15s ease,border-color .15s ease;
 }
-.btn-primary{background:var(--saffron);color:var(--ink)}
-.btn-primary:hover{background:#f2b45a}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#E33B7D}
 .btn-ghost{border-color:var(--line-dark);color:var(--ivory)}
-.btn-ghost:hover{border-color:var(--turq);color:var(--turq-soft)}
+.btn-ghost:hover{border-color:var(--steel);color:var(--steel-soft)}
 
 /* the plaque: the real artifact of this product */
 .plaque{
@@ -139,13 +146,13 @@ p{margin:0}
 /* ---------- steps ---------- */
 .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line-dark);border:1px solid var(--line-dark);margin-top:40px}
 .step{background:var(--ink);padding:26px 22px 30px}
-.step-n{font-family:var(--mono);font-size:12px;color:var(--saffron);letter-spacing:.14em;margin-bottom:14px}
+.step-n{font-family:var(--mono);font-size:12px;color:var(--accent-on-dark);letter-spacing:.14em;margin-bottom:14px}
 .step h3{margin-bottom:8px}
 .step p{color:var(--muted);font-size:15px;line-height:1.55}
 
 /* ---------- calculator (signature) ---------- */
 .calc{
-  margin-top:44px;border:1px solid var(--line-light);background:#fff;
+  margin-top:44px;border:1px solid var(--line-light);background:var(--paper);
   display:grid;grid-template-columns:1.25fr .75fr;
 }
 .calc-inputs{padding:clamp(22px,3vw,34px);border-right:1px solid var(--line-light)}
@@ -162,15 +169,15 @@ p{margin:0}
 .stepper button:hover{background:var(--ivory-2);border-color:var(--ink-on-light)}
 .stepper input{
   width:62px;height:36px;text-align:center;font-family:var(--mono);font-size:16px;
-  border:1px solid var(--line-light);border-radius:2px;background:#fff;color:var(--ink-on-light);
+  border:1px solid var(--line-light);border-radius:2px;background:var(--paper);color:var(--ink-on-light);
   -moz-appearance:textfield;
 }
 .stepper input::-webkit-outer-spin-button,.stepper input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .calc-sub{font-family:var(--mono);font-size:15px;min-width:66px;text-align:right;color:var(--muted-on-light)}
 
 .calc-out{padding:clamp(22px,3vw,34px);background:var(--ink);color:var(--ivory);display:flex;flex-direction:column;justify-content:center}
-.calc-tier{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--turq-soft)}
-.calc-tier b{color:var(--saffron);font-weight:400}
+.calc-tier{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--steel-soft)}
+.calc-tier b{color:var(--accent-on-dark);font-weight:400}
 .calc-total{font-family:var(--display);font-weight:800;font-size:clamp(40px,6vw,60px);line-height:1;letter-spacing:-.03em;margin:12px 0 4px}
 .calc-per{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
 .calc-note{margin-top:20px;padding-top:18px;border-top:1px solid var(--line-dark);font-size:14px;line-height:1.55;color:var(--muted)}
@@ -186,18 +193,18 @@ thead th{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transf
 tbody td:last-child,tbody th:last-child{font-family:var(--mono)}
 .band-light tbody tr:last-child td{border-bottom:0}
 .num{font-family:var(--mono);white-space:nowrap}
-.pay{color:#0F7F5B;font-weight:700}
-.th-note{font-family:var(--mono);font-size:10px;color:var(--turq);letter-spacing:.06em;display:inline-block;margin-left:4px}
+.pay{color:var(--accent);font-weight:700}
+.th-note{font-family:var(--mono);font-size:10px;color:var(--accent);letter-spacing:.06em;display:inline-block;margin-left:4px}
 .row-note{display:block;font-family:var(--body);font-weight:400;font-size:13px;line-height:1.4;color:var(--muted-on-light);margin-top:3px}
 tbody th{font-weight:600}
 
 /* ---------- proof ---------- */
 .proofs{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line-dark);border:1px solid var(--line-dark);margin-top:40px}
 .proof{background:var(--ink);padding:28px 24px}
-.proof h3{margin-bottom:10px;color:var(--turq-soft)}
+.proof h3{margin-bottom:10px;color:var(--steel-soft)}
 .proof p{color:var(--muted);font-size:15px;line-height:1.6}
-.proof a{color:var(--saffron);text-decoration:none;border-bottom:1px solid rgba(232,163,61,.45);word-break:break-word}
-.proof a:hover{border-bottom-color:var(--saffron)}
+.proof a{color:var(--accent-on-dark);text-decoration:none;border-bottom:1px solid rgba(245,111,160,.45);word-break:break-word}
+.proof a:hover{border-bottom-color:var(--accent-on-dark)}
 
 /* ---------- two columns: now / later ---------- */
 .split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,4vw,56px);margin-top:40px}
@@ -206,6 +213,8 @@ tbody th{font-weight:600}
 .list li:last-child{border-bottom:0}
 .list li::before{position:absolute;left:0;top:11px;font-family:var(--mono);font-size:14px}
 .list-yes li::before{content:"✓";color:#0F7F5B}
+/* Тот же смысл, светлее — в закрывающем блоке фон тёмно-синий. */
+.band-close .list-yes li::before{color:#5FC79E}
 .list-soon li::before{content:"→";color:var(--muted-on-light)}
 
 /* ---------- closing ---------- */
@@ -217,11 +226,11 @@ tbody th{font-weight:600}
   font-family:var(--display);font-weight:800;font-size:clamp(24px,3.2vw,34px);letter-spacing:-.02em;
   text-decoration:none;display:inline-block;line-height:1.2;
 }
-.contact-tel:hover{color:var(--saffron)}
+.contact-tel:hover{color:var(--accent-on-dark)}
 .contact-card p{color:var(--muted);font-size:15px;margin-top:14px;line-height:1.55}
 .links{list-style:none;margin:24px 0 0;padding:0;display:grid;gap:10px}
 .links a{font-family:var(--mono);font-size:14px;text-decoration:none;border-bottom:1px solid var(--line-dark);padding-bottom:3px;word-break:break-all}
-.links a:hover{color:var(--turq-soft);border-color:var(--turq)}
+.links a:hover{color:var(--steel-soft);border-color:var(--steel)}
 .links-note{margin-top:16px;font-size:13.5px;line-height:1.5;color:var(--muted)}
 
 footer{border-top:1px solid var(--line-dark);padding-block:26px;font-size:13px;color:var(--muted)}
@@ -327,8 +336,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         <div class="plaque-top">Комната</div>
         <div class="plaque-room">401</div>
         <svg class="plaque-qr" viewBox="0 0 29 29" aria-hidden="true" focusable="false">
-          <rect width="29" height="29" fill="#F3EEE4"/>
-          <g fill="#0C262B">
+          <rect width="29" height="29" fill="#F7F3EC"/>
+          <g fill="#102B4E">
             <path d="M0 0h7v7H0zM1 1v5h5V1z"/><rect x="2" y="2" width="3" height="3"/>
             <path d="M22 0h7v7h-7zM23 1v5h5V1z"/><rect x="24" y="2" width="3" height="3"/>
             <path d="M0 22h7v7H0zM1 23v5h5v-5z"/><rect x="2" y="24" width="3" height="3"/>
